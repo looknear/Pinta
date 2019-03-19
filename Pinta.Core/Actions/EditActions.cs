@@ -30,6 +30,10 @@ using Gtk;
 using Cairo;
 using Mono.Unix;
 using System.Linq;
+using Microsoft.Expression.Encoder;
+using Microsoft.Expression.Encoder.Devices;
+using Microsoft.Expression.Encoder.ScreenCapture;
+using System.Windows.Forms;
 
 namespace Pinta.Core
 {
@@ -48,14 +52,16 @@ namespace Pinta.Core
 		public Gtk.Action InvertSelection { get; private set; }
 		public Gtk.Action SelectAll { get; private set; }
 		public Gtk.Action Deselect { get; private set; }
-		public Gtk.Action LoadPalette { get; private set; }
+        public Gtk.Action Record { get; private set; }
+        public Gtk.Action LoadPalette { get; private set; }
 		public Gtk.Action SavePalette { get; private set; }
 		public Gtk.Action ResetPalette { get; private set; }
 		public Gtk.Action ResizePalette { get; private set; }
 		
 		private string lastPaletteDir = null;
-		
-		public EditActions ()
+        private ScreenCaptureJob job;
+
+        public EditActions ()
 		{
 			Gtk.IconFactory fact = new Gtk.IconFactory ();
 			fact.Add ("Menu.Edit.Deselect.png", new Gtk.IconSet (PintaCore.Resources.GetIcon ("Menu.Edit.Deselect.png")));
@@ -79,8 +85,9 @@ namespace Pinta.Core
 			InvertSelection = new Gtk.Action ("InvertSelection", Catalog.GetString ("Invert Selection"), null, "Menu.Edit.InvertSelection.png");
 			SelectAll = new Gtk.Action ("SelectAll", Catalog.GetString ("Select All"), null, Stock.SelectAll);
 			Deselect = new Gtk.Action ("Deselect", Catalog.GetString ("Deselect All"), null, "Menu.Edit.Deselect.png");
-			
-			LoadPalette = new Gtk.Action ("LoadPalette", Catalog.GetString ("Open..."), null, Stock.Open);
+            Record = new Gtk.Action("Record", Catalog.GetString("Start Session"), null, Stock.MediaRecord);
+
+            LoadPalette = new Gtk.Action ("LoadPalette", Catalog.GetString ("Open..."), null, Stock.Open);
 			SavePalette = new Gtk.Action ("SavePalette", Catalog.GetString ("Save As..."), null, Stock.Save);
 			ResetPalette = new Gtk.Action ("ResetPalette", Catalog.GetString ("Reset to Default"), null, Stock.RevertToSaved);
 			ResizePalette = new Gtk.Action ("ResizePalette", Catalog.GetString ("Set Number of Colors"), null, "Menu.Image.Resize.png");
@@ -90,6 +97,7 @@ namespace Pinta.Core
 			Redo.Sensitive = false;
 			InvertSelection.Sensitive = false;
 			Deselect.Sensitive = false;
+            Record.Sensitive = true;
 			EraseSelection.Sensitive = false;
 			FillSelection.Sensitive = false;
 		}
@@ -118,14 +126,17 @@ namespace Pinta.Core
 			deslect.AddAccelerator ("activate", PintaCore.Actions.AccelGroup, new AccelKey (Gdk.Key.D, Gdk.ModifierType.ControlMask, AccelFlags.Visible));
 			menu.Append (deslect);
 
-			menu.AppendSeparator ();
+            menu.AppendSeparator();
+            menu.Append(Record.CreateAcceleratedMenuItem(Gdk.Key.R, Gdk.ModifierType.ControlMask));
+
+            menu.AppendSeparator ();
 			menu.Append (EraseSelection.CreateAcceleratedMenuItem (Gdk.Key.Delete, Gdk.ModifierType.None));
 			menu.Append (FillSelection.CreateAcceleratedMenuItem (Gdk.Key.BackSpace, Gdk.ModifierType.None));
 			menu.Append (InvertSelection.CreateAcceleratedMenuItem (Gdk.Key.I, Gdk.ModifierType.ControlMask));
 			
 			menu.AppendSeparator ();
 			Gtk.Action menu_action = new Gtk.Action ("Palette", Mono.Unix.Catalog.GetString ("Palette"), null, null);
-			Menu palette_menu = (Menu) menu.AppendItem (menu_action.CreateSubMenuItem ()).Submenu;
+			Gtk.Menu palette_menu = (Gtk.Menu) menu.AppendItem (menu_action.CreateSubMenuItem ()).Submenu;
 			palette_menu.Append (LoadPalette.CreateMenuItem ());
 			palette_menu.Append (SavePalette.CreateMenuItem ());
 			palette_menu.Append (ResetPalette.CreateMenuItem ());
@@ -141,7 +152,8 @@ namespace Pinta.Core
 		public void RegisterHandlers ()
 		{
 			Deselect.Activated += HandlePintaCoreActionsEditDeselectActivated;
-			EraseSelection.Activated += HandlePintaCoreActionsEditEraseSelectionActivated;
+            Record.Activated += HandlePintaCoreActionsStartSessionActivated;
+            EraseSelection.Activated += HandlePintaCoreActionsEditEraseSelectionActivated;
 			SelectAll.Activated += HandlePintaCoreActionsEditSelectAllActivated;
 			FillSelection.Activated += HandlePintaCoreActionsEditFillSelectionActivated;
 			Copy.Activated += HandlerPintaCoreActionsEditCopyActivated;
@@ -235,7 +247,33 @@ namespace Pinta.Core
 			doc.Workspace.Invalidate ();
 		}
 
-		private void HandlerPintaCoreActionsEditCopyActivated (object sender, EventArgs e)
+        private void HandlePintaCoreActionsStartSessionActivated(object sender, EventArgs e)
+        {
+            Document doc = PintaCore.Workspace.ActiveDocument;
+
+            PintaCore.Tools.Commit();
+
+            if (null != job && job.Status == RecordStatus.Running)
+            {
+                job.Stop();
+                return;
+            }
+            
+            job = new ScreenCaptureJob();
+            System.Drawing.Size WorkingArea = SystemInformation.WorkingArea.Size;
+            System.Drawing.Rectangle captureRec = new System.Drawing.Rectangle(0, 0, WorkingArea.Width, WorkingArea.Height);
+            //System.Drawing.Rectangle captureRec = new System.Drawing.Rectangle(0,0 , WorkingArea.Width - (WorkingArea.Width % 4), WorkingArea.Height - (WorkingArea.Height % 4));
+
+            job.CaptureRectangle = captureRec;
+            job.ShowFlashingBoundary = true;
+            job.CaptureMouseCursor = true;
+            job.OutputPath = @"c:/VideoSessions";
+            job.Start();
+
+            doc.Workspace.Invalidate();
+        }
+
+        private void HandlerPintaCoreActionsEditCopyActivated (object sender, EventArgs e)
 		{
 			Gtk.Clipboard cb = Gtk.Clipboard.Get (Gdk.Atom.Intern ("CLIPBOARD", false));
 			if (PintaCore.Tools.CurrentTool.TryHandleCopy (cb))

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -29,6 +29,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,6 +42,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -49,6 +52,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -80,19 +84,19 @@
     <EmbeddedResource Include="Resources\Tools.Text.png">
       <LogicalName>Tools.Text.png</LogicalName>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\Cursor.Pan.png">
+    <EmbeddedResource Include="Resources\Cursor.Pan.png">
       <LogicalName>Cursor.Pan.png</LogicalName>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\Cursor.Paintbrush.png">
+    <EmbeddedResource Include="Resources\Cursor.Paintbrush.png">
       <LogicalName>Cursor.Paintbrush.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Cursor.ColorPicker.png">
       <LogicalName>Cursor.ColorPicker.png</LogicalName>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\Cursor.MagicWand.png">
+    <EmbeddedResource Include="Resources\Cursor.MagicWand.png">
       <LogicalName>Cursor.MagicWand.png</LogicalName>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\Cursor.Gradient.png">
+    <EmbeddedResource Include="Resources\Cursor.Gradient.png">
       <LogicalName>Cursor.Gradient.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Cursor.Text.png">
@@ -107,7 +111,7 @@
     <EmbeddedResource Include="Resources\Tools.LassoSelect.png">
       <LogicalName>Tools.LassoSelect.png</LogicalName>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\Cursor.RectangleSelect.png">
+    <EmbeddedResource Include="Resources\Cursor.RectangleSelect.png">
       <LogicalName>Cursor.RectangleSelect.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Cursor.LassoSelect.png">
@@ -116,7 +120,7 @@
     <EmbeddedResource Include="Resources\Cursor.EllipseSelect.png">
       <LogicalName>Cursor.EllipseSelect.png</LogicalName>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\Cursor.Eraser.png">
+    <EmbeddedResource Include="Resources\Cursor.Eraser.png">
       <LogicalName>Cursor.Eraser.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Cursor.Rectangle.png">
@@ -125,7 +129,7 @@
     <EmbeddedResource Include="Resources\Cursor.RoundedRectangle.png">
       <LogicalName>Cursor.RoundedRectangle.png</LogicalName>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\Cursor.Ellipse.png">
+    <EmbeddedResource Include="Resources\Cursor.Ellipse.png">
       <LogicalName>Cursor.Ellipse.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Cursor.FreeformShape.png">
@@ -200,7 +204,7 @@
     <EmbeddedResource Include="Resources\ColorPalette.SwapIcon.png">
       <LogicalName>ColorPalette.SwapIcon.png</LogicalName>
     </EmbeddedResource>
-	<EmbeddedResource Include="Resources\ColorPalette.ResetIcon.png">
+    <EmbeddedResource Include="Resources\ColorPalette.ResetIcon.png">
       <LogicalName>ColorPalette.ResetIcon.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Tools.Paintbrush.png">

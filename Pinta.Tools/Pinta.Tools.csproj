@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Common configuration -->
   <PropertyGroup>
     <ProjectGuid>{526152F2-2829-4AA6-B2F2-232579858A77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Pinta.Tools</AssemblyName>
     <RootNamespace>Pinta.Tools</RootNamespace>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ErrorReport>prompt</ErrorReport>
     <GenerateDocumentation>true</GenerateDocumentation>
@@ -15,28 +14,25 @@
     <OutputPath>..\bin</OutputPath>
     <Platform>AnyCPU</Platform>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
-
   <!-- Debug configuration -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineConstants>DEBUG</DefineConstants>
     <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-
   <!-- Release configuration -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-
   <!-- References -->
   <ItemGroup>
-    <Reference Condition=" '$(PINTA_MONO_POSIX_2)' == '' " Include="Mono.Posix" />
-    <Reference Condition=" '$(PINTA_MONO_POSIX_2)' != '' " Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL" />
-
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -45,12 +41,15 @@
       <HintPath>..\lib\Mono.Addins.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cairo" />
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL" />
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Input.Manipulations" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
-
   <!-- Source files -->
   <ItemGroup>
     <Compile Include="Brushes\CircleBrush.cs" />
@@ -107,14 +106,11 @@
     <Compile Include="Tools\ToolControl\ToolControl.cs" />
     <Compile Include="Tools\ZoomTool.cs" />
   </ItemGroup>
-
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-
   <ItemGroup>
     <ProjectReference Include="..\Pinta.Core\Pinta.Core.csproj">
       <Project>{30091528-6EC1-40F8-B4BF-8EB41CBE8A8B}</Project>
       <Name>Pinta.Core</Name>
     </ProjectReference>
   </ItemGroup>
-
 </Project>

@@ -29,6 +29,7 @@ using Cairo;
 using Gtk;
 using Pinta.Core;
 using Mono.Unix;
+using System.Windows.Input;
 
 namespace Pinta.Tools
 {
@@ -47,8 +48,20 @@ namespace Pinta.Tools
 		protected override bool ShowAntialiasingButton { get { return true; } }
 	    
 		public virtual int BrushWidth { 
-			get { 
-				int width;
+			get {
+
+                /// Get the current stylus device
+                StylusDevice myStylusDevice = Stylus.CurrentStylusDevice;
+                int press_width = 0;
+                double pressure = 0;
+                if (null != myStylusDevice)
+                {
+                    StylusPointCollection sPC = myStylusDevice.GetStylusPoints(myStylusDevice.DirectlyOver);
+                    pressure = sPC[0].PressureFactor;
+                    press_width = (int)pressure * 10;
+                }
+
+                int width;
 				if (brush_width != null)
 				{
 					if (Int32.TryParse(brush_width.ComboBox.ActiveText, out width))
@@ -56,7 +69,7 @@ namespace Pinta.Tools
 						if (width > 0)
 						{
 							(brush_width.ComboBox as Gtk.ComboBoxEntry).Entry.Text = width.ToString();
-							return width;
+							return width + press_width;
 						}
 					}
 

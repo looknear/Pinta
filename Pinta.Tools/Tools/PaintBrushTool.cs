@@ -175,7 +175,7 @@ namespace Pinta.Tools
 
 			var surf = doc.CurrentUserLayer.Surface;
 			var invalidate_rect = Gdk.Rectangle.Zero;
-			var brush_width = BrushWidth;
+            var brush_width = BrushWidth;//nlook width change of brush + x/10;
 
 			using (var g = new Context (surf)) {
 				g.AppendPath (doc.Selection.SelectionPath);
