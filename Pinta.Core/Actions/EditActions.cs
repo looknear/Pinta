@@ -308,6 +308,13 @@ namespace Pinta.Core
             }
         }
 
+        private void HandlePintaCorePalettePrimaryColorChanged(object sender, EventArgs e)
+        {
+            Document doc = PintaCore.Workspace.ActiveDocument;
+            Cairo.ImageSurface old = doc.CurrentUserLayer.Surface.Clone();
+            doc.History.PushNewItem(new SimpleHistoryItem(Stock.MediaRecord, Catalog.GetString("Color Changed"), old, doc.CurrentUserLayerIndex));
+        }
+
         private void HandlePintaCoreActionsStartSessionActivated(object sender, EventArgs e)
         {
             Document doc = PintaCore.Workspace.ActiveDocument;
@@ -316,7 +323,7 @@ namespace Pinta.Core
 
             if (_isRecording == false)
             {
-                //this.SetScreenArea();
+                PintaCore.Palette.PrimaryColorChanged += HandlePintaCorePalettePrimaryColorChanged;
 
                 this._frameCount = 0;
 
@@ -337,6 +344,7 @@ namespace Pinta.Core
             else
             {
                 _isRecording = false;
+                PintaCore.Palette.PrimaryColorChanged -= HandlePintaCorePalettePrimaryColorChanged;
                 MessageBox.Show(@"Video recording saved!");
             }
 
