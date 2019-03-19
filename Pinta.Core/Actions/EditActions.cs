@@ -30,10 +30,15 @@ using Gtk;
 using Cairo;
 using Mono.Unix;
 using System.Linq;
-using Microsoft.Expression.Encoder;
-using Microsoft.Expression.Encoder.Devices;
-using Microsoft.Expression.Encoder.ScreenCapture;
+//using Microsoft.Expression.Encoder;
+//using Microsoft.Expression.Encoder.Devices;
+//using Microsoft.Expression.Encoder.ScreenCapture;
 using System.Windows.Forms;
+using AForge.Video.FFMPEG;
+using AForge.Video;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Pinta.Core
 {
@@ -59,7 +64,18 @@ namespace Pinta.Core
 		public Gtk.Action ResizePalette { get; private set; }
 		
 		private string lastPaletteDir = null;
-        private ScreenCaptureJob job;
+        //for video via Expression
+        //private ScreenCaptureJob job;
+        private bool _isRecording;
+        private List<string> _screenNames;
+        //private Rectangle _screenSize;
+        private UInt32 _frameCount;
+        private VideoFileWriter _writer;
+        private int _width;
+        private int _height;
+        private ScreenCaptureStream _streamVideo;
+        private Stopwatch _stopWatch;
+        private System.Drawing.Rectangle _screenArea;
 
         public EditActions ()
 		{
@@ -100,7 +116,18 @@ namespace Pinta.Core
             Record.Sensitive = true;
 			EraseSelection.Sensitive = false;
 			FillSelection.Sensitive = false;
-		}
+
+            //video init
+            this._isRecording = false;
+            //this._screenSize = Screen.PrimaryScreen.Bounds;
+            this._frameCount = 0;
+            this._width = SystemInformation.VirtualScreen.Width;
+            this._height = SystemInformation.VirtualScreen.Height;
+            this._stopWatch = new Stopwatch();
+            this._screenArea = Screen.PrimaryScreen.Bounds;
+            this._writer = new VideoFileWriter();
+
+        }
 
 		#region Initialization
 		public void CreateMainMenu (Gtk.Menu menu)
@@ -247,12 +274,74 @@ namespace Pinta.Core
 			doc.Workspace.Invalidate ();
 		}
 
+        private void StartRecord() //Object stateInfo
+        {
+            _isRecording = true;
+
+            // create screen capture video source
+            this._streamVideo = new ScreenCaptureStream(this._screenArea);
+
+            // set NewFrame event handler
+            this._streamVideo.NewFrame += new NewFrameEventHandler(this.video_NewFrame);
+
+            // start the video source
+            this._streamVideo.Start();
+
+            // _stopWatch
+            this._stopWatch.Start();
+        }
+
+        private void video_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            if (this._isRecording)
+            {
+                this._frameCount++;
+                this._writer.WriteVideoFrame(eventArgs.Frame);
+            }
+            else
+            {
+                _stopWatch.Reset();
+                Thread.Sleep(500);
+                _streamVideo.SignalToStop();
+                Thread.Sleep(500);
+                _writer.Close();
+            }
+        }
+
         private void HandlePintaCoreActionsStartSessionActivated(object sender, EventArgs e)
         {
             Document doc = PintaCore.Workspace.ActiveDocument;
 
             PintaCore.Tools.Commit();
 
+            if (_isRecording == false)
+            {
+                //this.SetScreenArea();
+
+                this._frameCount = 0;
+
+                string fullName = string.Format(@"{0}\{1}_{2}.avi", @"c:/VideoSessions", Environment.UserName.ToUpper(), DateTime.Now.ToString("d_MMM_yyyy_HH_mm_ssff"));
+
+                // Save File option
+                _writer.Open(
+                    fullName,
+                    this._width,
+                    this._height,
+                    12,
+                    VideoCodec.MPEG4,
+                    1000000);
+
+                // Start main work
+                this.StartRecord();
+            }
+            else
+            {
+                _isRecording = false;
+                MessageBox.Show(@"Video recording saved!");
+            }
+
+
+            /* using expression
             if (null != job && job.Status == RecordStatus.Running)
             {
                 job.Stop();
@@ -269,6 +358,7 @@ namespace Pinta.Core
             job.CaptureMouseCursor = true;
             job.OutputPath = @"c:/VideoSessions";
             job.Start();
+            */
 
             doc.Workspace.Invalidate();
         }
