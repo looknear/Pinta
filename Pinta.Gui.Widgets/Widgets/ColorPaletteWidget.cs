@@ -34,13 +34,13 @@ namespace Pinta.Gui.Widgets
 	[System.ComponentModel.ToolboxItem (true)]
 	public class ColorPaletteWidget : Gtk.DrawingArea
 	{
-		private Rectangle primary_rect = new Rectangle (7, 7, 30, 30);
+		private Rectangle primary_rect = new Rectangle (7, 7, 50, 50);
 		private Rectangle secondary_rect = new Rectangle (22, 22, 30, 30);
 		private Rectangle swap_rect = new Rectangle (37, 6, 15, 15);
 		private Rectangle reset_rect = new Rectangle (7, 37, 15, 15);
 
         const int primarySecondaryAreaSize = 60;
-        const int swatchSize = 15;
+        const int swatchSize = 40;//nlook resize from 15
         const int swatchAreaMargin = 7;
 
         OrientationEnum orientation;
@@ -173,17 +173,17 @@ namespace Pinta.Gui.Widgets
 				
                 // Draw Primary / Secondary Area
 
-				g.FillRectangle (secondary_rect, PintaCore.Palette.SecondaryColor);
+				//g.FillRectangle (secondary_rect, PintaCore.Palette.SecondaryColor);
 			
-				g.DrawRectangle (new Rectangle (secondary_rect.X + 1, secondary_rect.Y + 1, secondary_rect.Width - 2, secondary_rect.Height - 2), new Color (1, 1, 1), 1);
-				g.DrawRectangle (secondary_rect, new Color (0, 0, 0), 1);
+				//g.DrawRectangle (new Rectangle (secondary_rect.X + 1, secondary_rect.Y + 1, secondary_rect.Width - 2, secondary_rect.Height - 2), new Color (1, 1, 1), 1);
+				//g.DrawRectangle (secondary_rect, new Color (0, 0, 0), 1);
 	
 				g.FillRectangle (primary_rect, PintaCore.Palette.PrimaryColor);
 				g.DrawRectangle (new Rectangle (primary_rect.X + 1, primary_rect.Y + 1, primary_rect.Width - 2, primary_rect.Height - 2), new Color (1, 1, 1), 1);
 				g.DrawRectangle (primary_rect, new Color (0, 0, 0), 1);
 	
-				g.DrawPixbuf (swap_icon, swap_rect.Location ());
-				g.DrawPixbuf (reset_icon, reset_rect.Location ());
+				//g.DrawPixbuf (swap_icon, swap_rect.Location ());
+				//g.DrawPixbuf (reset_icon, reset_rect.Location ());
 
                 // Draw color swatches
 
@@ -201,7 +201,7 @@ namespace Pinta.Gui.Widgets
                         int x = (orientation == OrientationEnum.Horizontal) ? startI + iRow * swatchSize : startJ + jRow * swatchSize;
                         int y = (orientation == OrientationEnum.Horizontal) ? startJ + jRow * swatchSize : startI + iRow * swatchSize;
 
-                        g.FillRectangle(new Rectangle(x, y, swatchSize, swatchSize), palette[paletteIndex]);
+                        g.FillRectangle(new Rectangle(x, y + 5, swatchSize, swatchSize), palette[paletteIndex]);
 
                         paletteIndex++;
                     }

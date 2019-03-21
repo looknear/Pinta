@@ -102,7 +102,25 @@ namespace Pinta.Core
 		{
 			colors.Clear ();
 
-			colors.Add (new Color (255 / 255f, 255 / 255f, 255 / 255f));
+            //nlook start
+            colors.Add(new Color(255 / 255f, 0 / 255f, 0 / 255f));//red
+            colors.Add(new Color(255 / 255f, 96 / 255f, 208 / 255f));//pink
+            colors.Add(new Color(160 / 255f, 32 / 255f, 255 / 255f));//purple
+            colors.Add(new Color(80 / 255f, 208 / 255f, 255 / 255f));//light blue
+            colors.Add(new Color(0 / 255f, 32 / 255f, 255 / 255f));//blue
+            colors.Add(new Color(96 / 255f, 255 / 255f, 128 / 255f));//yellow green
+            colors.Add(new Color(0 / 255f, 192 / 255f, 0 / 255f));//green
+            colors.Add(new Color(255 / 255f, 224 / 255f, 32 / 255f));//yellow
+            colors.Add(new Color(255 / 255f, 160 / 255f, 16 / 255f));//orange
+            colors.Add(new Color(160 / 255f, 128 / 255f, 96 / 255f));//brown
+            colors.Add(new Color(0 / 255f, 0 / 255f, 0 / 255f));//black
+            colors.Add(new Color(128 / 255f, 128 / 255f, 128 / 255f));//gray
+            colors.Add(new Color(224 / 255f, 224 / 255f, 224 / 255f));//light-gray
+            colors.Add(new Color(255 / 255f, 255 / 255f, 255 / 255f));//white
+            //////////// nlook end
+
+            /*
+            colors.Add (new Color (255 / 255f, 255 / 255f, 255 / 255f));
 			colors.Add (new Color (128 / 255f, 128 / 255f, 128 / 255f));
 			colors.Add (new Color (127 / 255f, 0 / 255f, 0 / 255f));
 			colors.Add (new Color (127 / 255f, 51 / 255f, 0 / 255f));
@@ -152,6 +170,7 @@ namespace Pinta.Core
 			colors.Add (new Color (214 / 255f, 127 / 255f, 255 / 255f));
 			colors.Add (new Color (255 / 255f, 127 / 255f, 237 / 255f));
 			colors.Add (new Color (255 / 255f, 127 / 255f, 182 / 255f));
+            */
 
 			colors.TrimExcess ();
 			OnPaletteChanged ();
